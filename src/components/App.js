@@ -138,7 +138,7 @@ function App() {
 
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
-      <div className="popup popup_type_confirm-remove">
+      {/* <div className="popup popup_type_confirm-remove">
         <div className="popup__container">
           <form className="popup__set">
             <h2 className="popup__title">Вы уверены?</h2>
@@ -146,9 +146,9 @@ function App() {
               Да
             </button>
           </form>
-          <button className="popup__close-button" type="button"></button>
+          <button className="popup__close-button" type="button" />
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

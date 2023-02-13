@@ -19,7 +19,7 @@ function Card({card, onCardClick}) {
             className="card__like-button"
             type="button"
             title="Мне нравится"
-          ></button>
+          />
           <span className="card__like-counter">{card.likes.length}</span>
         </div>
       </div>
@@ -27,7 +27,7 @@ function Card({card, onCardClick}) {
         className="card__remove-button"
         type="button"
         title="Удалить место"
-      ></button>
+      />
     </li>
   );
 }

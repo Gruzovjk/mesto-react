@@ -36,7 +36,7 @@ function Main({onEditProfile, onAddPlace, onEditAvatar, onCardClick}) {
             type="button"
             title="Редактировать фото профиля"
             onClick={onEditAvatar}
-          ></button>
+          />
         </div>
         <div className="profile__info">
           <h1 className="profile__name">{userName}</h1>
@@ -45,7 +45,7 @@ function Main({onEditProfile, onAddPlace, onEditAvatar, onCardClick}) {
             type="button"
             title="Редактировать профиль"
             onClick={onEditProfile}
-          ></button>
+          />
           <p className="profile__about">{userDescription}</p>
         </div>
         <button
@@ -53,7 +53,7 @@ function Main({onEditProfile, onAddPlace, onEditAvatar, onCardClick}) {
           type="button"
           title="Добавить новое место"
           onClick={onAddPlace}
-        ></button>
+        />
       </section>
 
       <section className="elements">
