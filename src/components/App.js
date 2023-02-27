@@ -1,26 +1,24 @@
-import React from "react";
+import {useState, useEffect} from "react";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
-import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 import {api} from "../utils/Api";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 
 function App() {
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
-    React.useState(false);
-  const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
-    React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState(null);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
 
-  const [currentUser, setCurrentUser] = React.useState({});
-  const [cards, setCards] = React.useState([]);
+  const [currentUser, setCurrentUser] = useState({});
+  const [cards, setCards] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
       .then(([userData, cardList]) => {
         setCurrentUser(userData);
@@ -105,6 +103,18 @@ function App() {
       );
   }
 
+  function handleAddPlaceSubmit(data) {
+    api
+      .addCard(data)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((err) =>
+        console.log(`При добавлении места произошла ошибка: ${err}`)
+      );
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <>
@@ -131,39 +141,11 @@ function App() {
           onUpdateAvatar={handleUpdateAvatar}
         />
 
-        <PopupWithForm
-          title="Новое место"
-          name="card-add"
-          buttonText="Создать"
+        <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
-        >
-          <div className="popup__input-wrap">
-            <input
-              type="text"
-              id="card-name"
-              className="popup__input popup__card-name"
-              name="name"
-              placeholder="Название места"
-              minLength="2"
-              maxLength="30"
-              required
-            />
-            <span className="popup__input-error"></span>
-          </div>
-          <div className="popup__input-wrap">
-            <input
-              type="url"
-              pattern="([^\s]+(?=\.(jpg|gif|png|jpeg))\.\2)"
-              id="card-url"
-              className="popup__input popup__card-link"
-              name="src"
-              placeholder="Ссылка на фото (формата .jpg, .gif или .png)"
-              required
-            />
-            <span className="popup__input-error"></span>
-          </div>
-        </PopupWithForm>
+          onUpdatePlace={handleAddPlaceSubmit}
+        />
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
