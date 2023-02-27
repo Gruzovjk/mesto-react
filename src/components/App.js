@@ -8,15 +8,20 @@ import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import ConfirmPopup from "./ConfirmPopup";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(null);
 
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
@@ -45,11 +50,14 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setisAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
+    setIsImagePopupOpen(false);
     setSelectedCard(null);
+    setIsConfirmPopupOpen(null);
   }
 
   function handleCardClick(card) {
     setSelectedCard(card);
+    setIsImagePopupOpen(true);
   }
 
   function handleCardLike(card) {
@@ -67,6 +75,7 @@ function App() {
   }
 
   function handleCardRemove(card) {
+    setIsLoading(true);
     api
       .removeCard(card._id)
       .then(() => {
@@ -76,10 +85,18 @@ function App() {
       })
       .catch((err) =>
         console.log(`При удалении карточки произошла ошибка: ${err}`)
-      );
+      )
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  function handleCardRemoveClick(card) {
+    setIsConfirmPopupOpen(card);
   }
 
   function handleUpdateUser(data) {
+    setIsLoading(true);
     api
       .editUserInfo(data)
       .then((user) => {
@@ -88,10 +105,14 @@ function App() {
       })
       .catch((err) =>
         console.log(`При обновлении данных произошла ошибка: ${err}`)
-      );
+      )
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   function handleUpdateAvatar(data) {
+    setIsLoading(true);
     api
       .editUserAvatar(data)
       .then((user) => {
@@ -100,10 +121,15 @@ function App() {
       })
       .catch((err) =>
         console.log(`При обновлении аватара произошла ошибка: ${err}`)
-      );
+      )
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   function handleAddPlaceSubmit(data) {
+    setIsLoading(true);
+    console.log(isLoading);
     api
       .addCard(data)
       .then((newCard) => {
@@ -112,7 +138,16 @@ function App() {
       })
       .catch((err) =>
         console.log(`При добавлении места произошла ошибка: ${err}`)
-      );
+      )
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  function closePopupByEscEndOverlay(e) {
+    if (e.key === "Escape" || e.target.classList.contains("popup_opened")) {
+      closeAllPopups();
+    }
   }
 
   return (
@@ -125,8 +160,9 @@ function App() {
           onEditAvatar={handleEditAvatarClick}
           onCardClick={handleCardClick}
           cards={cards}
+          card={selectedCard}
           onCardLike={handleCardLike}
-          onCardRemove={handleCardRemove}
+          onCardRemove={handleCardRemoveClick}
         />
         <Footer />
 
@@ -134,32 +170,39 @@ function App() {
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
+          onCloseByEscEndOverlay={closePopupByEscEndOverlay}
+          isLoading={isLoading}
         />
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
+          onCloseByEscEndOverlay={closePopupByEscEndOverlay}
+          isLoading={isLoading}
         />
 
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onUpdatePlace={handleAddPlaceSubmit}
+          onCloseByEscEndOverlay={closePopupByEscEndOverlay}
+          isLoading={isLoading}
         />
 
-        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        <ImagePopup
+          card={selectedCard}
+          onClose={closeAllPopups}
+          onCloseByEscEndOverlay={closePopupByEscEndOverlay}
+          isOpen={isImagePopupOpen}
+        />
 
-        {/* <div className="popup popup_type_confirm-remove">
-        <div className="popup__container">
-          <form className="popup__set">
-            <h2 className="popup__title">Вы уверены?</h2>
-            <button type="submit" className="popup__save-button">
-              Да
-            </button>
-          </form>
-          <button className="popup__close-button" type="button" />
-        </div>
-      </div> */}
+        <ConfirmPopup
+          card={isConfirmPopupOpen}
+          onCloseByEscEndOverlay={closePopupByEscEndOverlay}
+          onClose={closeAllPopups}
+          onCardRemove={handleCardRemove}
+          isLoading={isLoading}
+        />
       </>
     </CurrentUserContext.Provider>
   );

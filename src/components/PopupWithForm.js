@@ -1,3 +1,5 @@
+import {useEffect} from "react";
+
 function PopupWithForm({
   title,
   name,
@@ -6,7 +8,20 @@ function PopupWithForm({
   isOpen,
   onClose,
   onSubmit,
+  onCloseByEscEndOverlay,
+  isLoading,
+  buttonLoadingText,
 }) {
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("keyup", onCloseByEscEndOverlay);
+      document.addEventListener("mouseup", onCloseByEscEndOverlay);
+    } else {
+      document.removeEventListener("keyup", onCloseByEscEndOverlay);
+      document.removeEventListener("mouseup", onCloseByEscEndOverlay);
+    }
+  }, [isOpen]);
+
   return (
     <div className={`popup popup_type_${name} ${isOpen && "popup_opened"}`}>
       <div className="popup__container">
@@ -20,7 +35,7 @@ function PopupWithForm({
             <h2 className="popup__title">{title}</h2>
             {children}
             <button type="submit" className="popup__save-button">
-              {buttonText}
+              {isLoading ? buttonLoadingText : buttonText}
             </button>
           </form>
         </div>
