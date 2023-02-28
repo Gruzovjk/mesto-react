@@ -21,7 +21,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
@@ -75,7 +75,7 @@ function App() {
   }
 
   function handleCardRemove(card) {
-    setIsLoading(true);
+    setLoading(true);
     api
       .removeCard(card._id)
       .then(() => {
@@ -87,7 +87,7 @@ function App() {
         console.log(`При удалении карточки произошла ошибка: ${err}`)
       )
       .finally(() => {
-        setIsLoading(false);
+        setLoading(false);
       });
   }
 
@@ -96,7 +96,7 @@ function App() {
   }
 
   function handleUpdateUser(data) {
-    setIsLoading(true);
+    setLoading(true);
     api
       .editUserInfo(data)
       .then((user) => {
@@ -107,12 +107,12 @@ function App() {
         console.log(`При обновлении данных произошла ошибка: ${err}`)
       )
       .finally(() => {
-        setIsLoading(false);
+        setLoading(false);
       });
   }
 
   function handleUpdateAvatar(data) {
-    setIsLoading(true);
+    setLoading(true);
     api
       .editUserAvatar(data)
       .then((user) => {
@@ -123,13 +123,12 @@ function App() {
         console.log(`При обновлении аватара произошла ошибка: ${err}`)
       )
       .finally(() => {
-        setIsLoading(false);
+        setLoading(false);
       });
   }
 
   function handleAddPlaceSubmit(data) {
-    setIsLoading(true);
-    console.log(isLoading);
+    setLoading(true);
     api
       .addCard(data)
       .then((newCard) => {
@@ -140,7 +139,7 @@ function App() {
         console.log(`При добавлении места произошла ошибка: ${err}`)
       )
       .finally(() => {
-        setIsLoading(false);
+        setLoading(false);
       });
   }
 
@@ -172,6 +171,8 @@ function App() {
           onUpdateUser={handleUpdateUser}
           onCloseByEscEndOverlay={closePopupByEscEndOverlay}
           isLoading={isLoading}
+          buttonText="Сохранить"
+          buttonLoadingText="Обновляем данные..."
         />
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
@@ -179,6 +180,8 @@ function App() {
           onUpdateAvatar={handleUpdateAvatar}
           onCloseByEscEndOverlay={closePopupByEscEndOverlay}
           isLoading={isLoading}
+          buttonText="Сохранить"
+          buttonLoadingText="Обновляем аватар..."
         />
 
         <AddPlacePopup
@@ -187,6 +190,8 @@ function App() {
           onUpdatePlace={handleAddPlaceSubmit}
           onCloseByEscEndOverlay={closePopupByEscEndOverlay}
           isLoading={isLoading}
+          buttonText="Создать"
+          buttonLoadingText="Добавляем место..."
         />
 
         <ImagePopup
@@ -202,6 +207,8 @@ function App() {
           onClose={closeAllPopups}
           onCardRemove={handleCardRemove}
           isLoading={isLoading}
+          buttonText="Да"
+          buttonLoadingText="Удаляем место..."
         />
       </>
     </CurrentUserContext.Provider>

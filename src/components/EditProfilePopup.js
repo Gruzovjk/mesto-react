@@ -1,6 +1,7 @@
-import {useContext, useState, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import PopupWithForm from "./PopupWithForm";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
+import useInput from "../hooks/useInput";
 
 function EditProfilePopup({
   isOpen,
@@ -8,29 +9,34 @@ function EditProfilePopup({
   onUpdateUser,
   onCloseByEscEndOverlay,
   isLoading,
+  buttonLoadingText,
+  buttonText,
 }) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
   const currentUser = useContext(CurrentUserContext);
 
+  const name = useInput("", {
+    isEmpty: true,
+    minLength: 2,
+    maxLength: 20,
+  });
+  const about = useInput("", {
+    isEmpty: true,
+    minLength: 2,
+    maxLength: 40,
+  });
+
   useEffect(() => {
-    setName(currentUser.name);
-    setDescription(currentUser.about);
+    if (Object.keys(currentUser).length) {
+      name.setValue(currentUser.name);
+      about.setValue(currentUser.about);
+    }
   }, [currentUser]);
-
-  function handleChangeName(e) {
-    setName(e.target.value);
-  }
-
-  function handleChangeDescription(e) {
-    setDescription(e.target.value);
-  }
 
   function handleSubmit(e) {
     e.preventDefault();
     onUpdateUser({
-      name,
-      about: description,
+      name: name.value,
+      about: about.value,
     });
   }
 
@@ -38,44 +44,68 @@ function EditProfilePopup({
     <PopupWithForm
       title="Редактировать профиль"
       name="type_profile"
-      buttonText="Сохранить"
-      buttonLoadingText="Обновляем данные..."
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
       onCloseByEscEndOverlay={onCloseByEscEndOverlay}
-      isLoading={isLoading}
     >
       <div className="popup__input-wrap">
         <input
-          type="text"
-          id="profile-name"
           className="popup__input popup__profile-name"
           name="name"
-          defaultValue={name}
-          onChange={handleChangeName}
+          maxLength="20"
           placeholder="Ваше имя"
-          minLength="2"
-          maxLength="40"
-          required
+          value={name.value}
+          onChange={name.onChange}
+          onBlur={name.onBlur}
+          style={{
+            borderColor: !name.isValid && name.isDirty ? "red" : "",
+          }}
         />
-        <span className="popup__input-error"></span>
+        <span className="popup__input-error">
+          {name.isEmpty && name.isDirty && "Поле не может быть пустым"}
+          {name.minLengthError &&
+            name.isDirty &&
+            !name.isEmpty &&
+            `Минимум 2 знака`}
+          {name.maxLengthError &&
+            name.isDirty &&
+            !name.isEmpty &&
+            `Максимум 20 знаков`}
+        </span>
       </div>
       <div className="popup__input-wrap">
         <input
-          type="text"
-          id="profile-about"
           className="popup__input popup__profile-about"
           name="about"
-          defaultValue={description}
-          onChange={handleChangeDescription}
+          maxLength="40"
           placeholder="Расскажите о себе"
-          minLength="2"
-          maxLength="200"
-          required
+          value={about.value}
+          onChange={about.onChange}
+          onBlur={about.onBlur}
+          style={{
+            borderColor: !about.isValid && about.isDirty ? "red" : "",
+          }}
         />
-        <span className="popup__input-error"></span>
+        <span className="popup__input-error">
+          {about.isEmpty && about.isDirty && "Поле не может быть пустым"}
+          {about.minLengthError &&
+            about.isDirty &&
+            !about.isEmpty &&
+            "Минимум 2 знака"}
+          {about.maxLengthError &&
+            about.isDirty &&
+            !about.isEmpty &&
+            `Максимум 40 знаков `}
+        </span>
       </div>
+      <button
+        type="submit"
+        className="popup__save-button"
+        disabled={!name.isValid || !about.isValid}
+      >
+        {isLoading ? buttonLoadingText : buttonText}
+      </button>
     </PopupWithForm>
   );
 }

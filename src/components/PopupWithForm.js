@@ -4,21 +4,18 @@ function PopupWithForm({
   title,
   name,
   children,
-  buttonText,
   isOpen,
   onClose,
   onSubmit,
   onCloseByEscEndOverlay,
-  isLoading,
-  buttonLoadingText,
 }) {
   useEffect(() => {
     if (isOpen) {
       document.addEventListener("keyup", onCloseByEscEndOverlay);
-      document.addEventListener("mouseup", onCloseByEscEndOverlay);
+      document.addEventListener("mousedown", onCloseByEscEndOverlay);
     } else {
       document.removeEventListener("keyup", onCloseByEscEndOverlay);
-      document.removeEventListener("mouseup", onCloseByEscEndOverlay);
+      document.removeEventListener("mousedown", onCloseByEscEndOverlay);
     }
   }, [isOpen]);
 
@@ -30,13 +27,10 @@ function PopupWithForm({
             className="popup__set"
             name={name}
             onSubmit={onSubmit}
-            //noValidate
+            noValidate
           >
             <h2 className="popup__title">{title}</h2>
             {children}
-            <button type="submit" className="popup__save-button">
-              {isLoading ? buttonLoadingText : buttonText}
-            </button>
           </form>
         </div>
         <button
