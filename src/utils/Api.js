@@ -6,25 +6,33 @@ class Api {
     this._headers = apiConfig.headers;
   }
 
-  // метод проверки ответа с сервера
-  _checkResponse(res) {
-    if (res.ok) {
-      return res.json();
-    } else {
-      return Promise.reject(`${res.status}: ${res.statusText}`);
-    }
+  // метод-форма запроса на сервер с проверкой ответа
+  _request(url, options) {
+    return fetch(url, options).then((res) => {
+      if (res.ok) {
+        return res.json();
+      } else {
+        return Promise.reject(`${res.status}: ${res.statusText}`);
+      }
+    });
   }
-  // получаем карточки с сервера (дай Бог)
-  async getInitialCards() {
-    const res = await fetch(`${this._url}/cards`, {
+
+  getInitialCards() {
+    return this._request(`${this._url}/cards`, {
       method: "GET",
       headers: this._headers,
     });
-    return this._checkResponse(res);
   }
-  // Добавление карточки на сервер (Зевс смилуется)
-  async addCard(data) {
-    const res = await fetch(`${this._url}/cards`, {
+
+  getUserInfo() {
+    return this._request(`${this._url}/users/me`, {
+      method: "GET",
+      headers: this._headers,
+    });
+  }
+
+  addCard(data) {
+    return this._request(`${this._url}/cards`, {
       method: "POST",
       headers: this._headers,
       body: JSON.stringify({
@@ -32,43 +40,31 @@ class Api {
         link: data.src,
       }),
     });
-    return this._checkResponse(res);
   }
   // удаление карточки с сервера по id (Будда услышит)
-  async removeCard(cardId) {
-    const res = await fetch(`${this._url}/cards/${cardId}`, {
+  removeCard(cardId) {
+    return this._request(`${this._url}/cards/${cardId}`, {
       method: "DELETE",
       headers: this._headers,
     });
-    return this._checkResponse(res);
   }
   // лайки (Афродита одобрит)
-  async addLike(cardId) {
-    const res = await fetch(`${this._url}/cards/${cardId}/likes`, {
-      method: "PUT",
-      headers: this._headers,
-    });
-    return this._checkResponse(res);
-  }
-  async removeLike(cardId) {
-    const res = await fetch(`${this._url}/cards/${cardId}/likes`, {
-      method: "DELETE",
-      headers: this._headers,
-    });
-    return this._checkResponse(res);
+  changeLikeCardStatus(cardId, isLiked) {
+    if (!isLiked) {
+      return this._request(`${this._url}/cards/${cardId}/likes`, {
+        method: "PUT",
+        headers: this._headers,
+      });
+    } else {
+      return this._request(`${this._url}/cards/${cardId}/likes`, {
+        method: "DELETE",
+        headers: this._headers,
+      });
+    }
   }
 
-  // получаем инфо профиля (Кришна со мной)
-  async getUserInfo() {
-    const res = await fetch(`${this._url}/users/me`, {
-      method: "GET",
-      headers: this._headers,
-    });
-    return this._checkResponse(res);
-  }
-  // редкатирование инфо (Перун благословит)
-  async editUserInfo(data) {
-    const res = await fetch(`${this._url}/users/me`, {
+  editUserInfo(data) {
+    return this._request(`${this._url}/users/me`, {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({
@@ -76,18 +72,16 @@ class Api {
         about: data.about,
       }),
     });
-    return this._checkResponse(res);
   }
   // редактирование аватара профиля (Один в помощь)
-  async editUserAvatar(data) {
-    const res = await fetch(`${this._url}/users/me/avatar`, {
+  editUserAvatar(data) {
+    return this._request(`${this._url}/users/me/avatar`, {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({
         avatar: data.avatar,
       }),
     });
-    return this._checkResponse(res);
   }
 }
 

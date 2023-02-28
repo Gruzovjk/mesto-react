@@ -1,4 +1,16 @@
-function ImagePopup({card, onClose}) {
+import {useEffect} from "react";
+
+function ImagePopup({card, onClose, onCloseByEscEndOverlay, isOpen}) {
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("keyup", onCloseByEscEndOverlay);
+      document.addEventListener("mouseup", onCloseByEscEndOverlay);
+    } else {
+      document.removeEventListener("keyup", onCloseByEscEndOverlay);
+      document.removeEventListener("mouseup", onCloseByEscEndOverlay);
+    }
+  }, [isOpen]);
+
   return (
     <div className={`popup popup_type_img ${card && "popup_opened"}`}>
       <div className="popup__container popup__container-img">
@@ -12,7 +24,7 @@ function ImagePopup({card, onClose}) {
           className="popup__close-button"
           type="button"
           onClick={onClose}
-        ></button>
+        />
       </div>
     </div>
   );
