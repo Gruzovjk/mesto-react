@@ -8,6 +8,10 @@ function PopupWithForm({
   onClose,
   onSubmit,
   onCloseByEscEndOverlay,
+  buttonLoadingText,
+  buttonText,
+  isValid,
+  isLoading,
 }) {
   useEffect(() => {
     if (isOpen) {
@@ -31,6 +35,13 @@ function PopupWithForm({
           >
             <h2 className="popup__title">{title}</h2>
             {children}
+            <button
+              type="submit"
+              className="popup__save-button"
+              disabled={!isValid}
+            >
+              {isLoading ? buttonLoadingText : buttonText}
+            </button>
           </form>
         </div>
         <button

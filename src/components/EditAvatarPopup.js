@@ -1,6 +1,6 @@
 import {useEffect} from "react";
-import useInput from "../hooks/useInput";
 import PopupWithForm from "./PopupWithForm";
+import {useFormAndValidation} from "../hooks/useFormAndValidation";
 
 function EditAvatarPopup({
   isOpen,
@@ -8,19 +8,18 @@ function EditAvatarPopup({
   onUpdateAvatar,
   onCloseByEscEndOverlay,
   isLoading,
-  buttonText,
-  buttonLoadingText,
 }) {
-  const link = useInput("", {isEmpty: true, minLength: 2, isLink: true});
+  const {values, handleChange, errors, isValid, resetForm} =
+    useFormAndValidation();
 
   useEffect(() => {
-    link.setValue("");
+    resetForm({}, {}, false);
   }, [isOpen]);
 
   function handleSubmit(e) {
     e.preventDefault();
     onUpdateAvatar({
-      avatar: link.value,
+      avatar: values.avatar,
     });
   }
 
@@ -32,39 +31,25 @@ function EditAvatarPopup({
       onClose={onClose}
       onSubmit={handleSubmit}
       onCloseByEscEndOverlay={onCloseByEscEndOverlay}
+      buttonText="Сохранить"
+      buttonLoadingText="Обновляем аватар..."
+      isValid={isValid}
+      isLoading={isLoading}
     >
       <div className="popup__input-wrap">
         <input
+          type="url"
           className="popup__input popup__card-link"
           name="avatar"
           placeholder="Ссылка на фото (формата .jpg, .gif или .png)"
-          value={link.value}
-          onChange={link.onChange}
-          onBlur={link.onBlur}
-          style={{
-            borderColor: !link.isValid && link.isDirty ? "red" : "",
-          }}
+          onChange={handleChange}
+          minLength={2}
+          value={values.avatar || ""}
+          pattern="(https?:\/\/.*\.(?:png|jpe?g|tiff?|png|webp|bmp))"
+          required
         />
-        <span className="popup__input-error">
-          {link.isEmpty && link.isDirty && "Поле не может быть пустым"}
-          {link.minLengthError &&
-            link.isDirty &&
-            !link.isEmpty &&
-            "Минимум 2 знака"}
-          {link.linkError &&
-            link.isDirty &&
-            !link.isEmpty &&
-            !link.minLengthError &&
-            "Ссылка должна заканчиваться на .gif/.jpeg/.jpg/.tiff/.png/.webp"}
-        </span>
+        <span className="popup__input-error">{!isValid && errors.avatar}</span>
       </div>
-      <button
-        type="submit"
-        className="popup__save-button"
-        disabled={!link.isValid}
-      >
-        {isLoading ? buttonLoadingText : buttonText}
-      </button>
     </PopupWithForm>
   );
 }

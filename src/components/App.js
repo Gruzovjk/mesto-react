@@ -171,8 +171,6 @@ function App() {
         onUpdateUser={handleUpdateUser}
         onCloseByEscEndOverlay={closePopupByEscEndOverlay}
         isLoading={isLoading}
-        buttonText="Сохранить"
-        buttonLoadingText="Обновляем данные..."
       />
       <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}
@@ -180,8 +178,6 @@ function App() {
         onUpdateAvatar={handleUpdateAvatar}
         onCloseByEscEndOverlay={closePopupByEscEndOverlay}
         isLoading={isLoading}
-        buttonText="Сохранить"
-        buttonLoadingText="Обновляем аватар..."
       />
 
       <AddPlacePopup
@@ -190,8 +186,6 @@ function App() {
         onUpdatePlace={handleAddPlaceSubmit}
         onCloseByEscEndOverlay={closePopupByEscEndOverlay}
         isLoading={isLoading}
-        buttonText="Создать"
-        buttonLoadingText="Добавляем место..."
       />
 
       <ImagePopup
@@ -207,8 +201,6 @@ function App() {
         onClose={closeAllPopups}
         onCardRemove={handleCardRemove}
         isLoading={isLoading}
-        buttonText="Да"
-        buttonLoadingText="Удаляем место..."
       />
     </CurrentUserContext.Provider>
   );

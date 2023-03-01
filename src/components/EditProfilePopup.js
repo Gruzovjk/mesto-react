@@ -1,7 +1,7 @@
 import {useContext, useEffect} from "react";
 import PopupWithForm from "./PopupWithForm";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
-import useInput from "../hooks/useInput";
+import {useFormAndValidation} from "../hooks/useFormAndValidation";
 
 function EditProfilePopup({
   isOpen,
@@ -9,34 +9,25 @@ function EditProfilePopup({
   onUpdateUser,
   onCloseByEscEndOverlay,
   isLoading,
-  buttonLoadingText,
-  buttonText,
 }) {
   const currentUser = useContext(CurrentUserContext);
 
-  const name = useInput("", {
-    isEmpty: true,
-    minLength: 2,
-    maxLength: 20,
-  });
-  const about = useInput("", {
-    isEmpty: true,
-    minLength: 2,
-    maxLength: 40,
-  });
+  const {values, handleChange, errors, isValid, resetForm} =
+    useFormAndValidation();
 
   useEffect(() => {
-    if (Object.keys(currentUser).length) {
-      name.setValue(currentUser.name);
-      about.setValue(currentUser.about);
-    }
+    resetForm(
+      {...values, name: currentUser.name, about: currentUser.about},
+      {},
+      true
+    );
   }, [currentUser, isOpen]);
 
   function handleSubmit(e) {
     e.preventDefault();
     onUpdateUser({
-      name: name.value,
-      about: about.value,
+      name: values.name,
+      about: values.about,
     });
   }
 
@@ -48,64 +39,37 @@ function EditProfilePopup({
       onClose={onClose}
       onSubmit={handleSubmit}
       onCloseByEscEndOverlay={onCloseByEscEndOverlay}
+      isLoading={isLoading}
+      isValid={isValid}
+      buttonText="Сохранить"
+      buttonLoadingText="Обновляем данные..."
     >
       <div className="popup__input-wrap">
         <input
           className="popup__input popup__profile-name"
           name="name"
           maxLength="20"
+          minLength="2"
+          required
           placeholder="Ваше имя"
-          value={name.value}
-          onChange={name.onChange}
-          onBlur={name.onBlur}
-          style={{
-            borderColor: !name.isValid && name.isDirty ? "red" : "",
-          }}
+          value={values.name || ""}
+          onChange={handleChange}
         />
-        <span className="popup__input-error">
-          {name.isEmpty && name.isDirty && "Поле не может быть пустым"}
-          {name.minLengthError &&
-            name.isDirty &&
-            !name.isEmpty &&
-            `Минимум 2 знака`}
-          {name.maxLengthError &&
-            name.isDirty &&
-            !name.isEmpty &&
-            `Максимум 20 знаков`}
-        </span>
+        <span className="popup__input-error">{!isValid && errors.name}</span>
       </div>
       <div className="popup__input-wrap">
         <input
           className="popup__input popup__profile-about"
           name="about"
           maxLength="40"
+          minLength="2"
+          required
           placeholder="Расскажите о себе"
-          value={about.value}
-          onChange={about.onChange}
-          onBlur={about.onBlur}
-          style={{
-            borderColor: !about.isValid && about.isDirty ? "red" : "",
-          }}
+          value={values.about || ""}
+          onChange={handleChange}
         />
-        <span className="popup__input-error">
-          {about.isEmpty && about.isDirty && "Поле не может быть пустым"}
-          {about.minLengthError &&
-            about.isDirty &&
-            !about.isEmpty &&
-            "Минимум 2 знака"}
-          {about.maxLengthError &&
-            about.isDirty &&
-            !about.isEmpty &&
-            `Максимум 40 знаков `}
-        </span>
+        <span className="popup__input-error">{!isValid && errors.about}</span>
       </div>
-      <button
-        type="submit"
-        className="popup__save-button"
-        disabled={!name.isValid || !about.isValid}
-      >
-        {isLoading ? buttonLoadingText : buttonText}
-      </button>
     </PopupWithForm>
   );
 }
