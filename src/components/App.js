@@ -16,7 +16,7 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
-  const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(null);
+  const [ConfirmPopupOpen, setConfirmPopupOpen] = useState(null);
 
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
@@ -52,7 +52,7 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsImagePopupOpen(false);
     setSelectedCard(null);
-    setIsConfirmPopupOpen(null);
+    setConfirmPopupOpen(null);
   }
 
   function handleCardClick(card) {
@@ -82,6 +82,7 @@ function App() {
         setCards((state) =>
           state.filter((item) => item._id !== card._id && item)
         );
+        closeAllPopups();
       })
       .catch((err) =>
         console.log(`При удалении карточки произошла ошибка: ${err}`)
@@ -92,7 +93,7 @@ function App() {
   }
 
   function handleCardRemoveClick(card) {
-    setIsConfirmPopupOpen(card);
+    setConfirmPopupOpen(card);
   }
 
   function handleUpdateUser(data) {
@@ -151,66 +152,64 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <>
-        <Header />
-        <Main
-          onEditProfile={handleEditProfileClick}
-          onAddPlace={handleAddPlaceClick}
-          onEditAvatar={handleEditAvatarClick}
-          onCardClick={handleCardClick}
-          cards={cards}
-          card={selectedCard}
-          onCardLike={handleCardLike}
-          onCardRemove={handleCardRemoveClick}
-        />
-        <Footer />
+      <Header />
+      <Main
+        onEditProfile={handleEditProfileClick}
+        onAddPlace={handleAddPlaceClick}
+        onEditAvatar={handleEditAvatarClick}
+        onCardClick={handleCardClick}
+        cards={cards}
+        card={selectedCard}
+        onCardLike={handleCardLike}
+        onCardRemove={handleCardRemoveClick}
+      />
+      <Footer />
 
-        <EditProfilePopup
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-          onUpdateUser={handleUpdateUser}
-          onCloseByEscEndOverlay={closePopupByEscEndOverlay}
-          isLoading={isLoading}
-          buttonText="Сохранить"
-          buttonLoadingText="Обновляем данные..."
-        />
-        <EditAvatarPopup
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-          onUpdateAvatar={handleUpdateAvatar}
-          onCloseByEscEndOverlay={closePopupByEscEndOverlay}
-          isLoading={isLoading}
-          buttonText="Сохранить"
-          buttonLoadingText="Обновляем аватар..."
-        />
+      <EditProfilePopup
+        isOpen={isEditProfilePopupOpen}
+        onClose={closeAllPopups}
+        onUpdateUser={handleUpdateUser}
+        onCloseByEscEndOverlay={closePopupByEscEndOverlay}
+        isLoading={isLoading}
+        buttonText="Сохранить"
+        buttonLoadingText="Обновляем данные..."
+      />
+      <EditAvatarPopup
+        isOpen={isEditAvatarPopupOpen}
+        onClose={closeAllPopups}
+        onUpdateAvatar={handleUpdateAvatar}
+        onCloseByEscEndOverlay={closePopupByEscEndOverlay}
+        isLoading={isLoading}
+        buttonText="Сохранить"
+        buttonLoadingText="Обновляем аватар..."
+      />
 
-        <AddPlacePopup
-          isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopups}
-          onUpdatePlace={handleAddPlaceSubmit}
-          onCloseByEscEndOverlay={closePopupByEscEndOverlay}
-          isLoading={isLoading}
-          buttonText="Создать"
-          buttonLoadingText="Добавляем место..."
-        />
+      <AddPlacePopup
+        isOpen={isAddPlacePopupOpen}
+        onClose={closeAllPopups}
+        onUpdatePlace={handleAddPlaceSubmit}
+        onCloseByEscEndOverlay={closePopupByEscEndOverlay}
+        isLoading={isLoading}
+        buttonText="Создать"
+        buttonLoadingText="Добавляем место..."
+      />
 
-        <ImagePopup
-          card={selectedCard}
-          onClose={closeAllPopups}
-          onCloseByEscEndOverlay={closePopupByEscEndOverlay}
-          isOpen={isImagePopupOpen}
-        />
+      <ImagePopup
+        card={selectedCard}
+        onClose={closeAllPopups}
+        onCloseByEscEndOverlay={closePopupByEscEndOverlay}
+        isOpen={isImagePopupOpen}
+      />
 
-        <ConfirmPopup
-          card={isConfirmPopupOpen}
-          onCloseByEscEndOverlay={closePopupByEscEndOverlay}
-          onClose={closeAllPopups}
-          onCardRemove={handleCardRemove}
-          isLoading={isLoading}
-          buttonText="Да"
-          buttonLoadingText="Удаляем место..."
-        />
-      </>
+      <ConfirmPopup
+        card={ConfirmPopupOpen}
+        onCloseByEscEndOverlay={closePopupByEscEndOverlay}
+        onClose={closeAllPopups}
+        onCardRemove={handleCardRemove}
+        isLoading={isLoading}
+        buttonText="Да"
+        buttonLoadingText="Удаляем место..."
+      />
     </CurrentUserContext.Provider>
   );
 }

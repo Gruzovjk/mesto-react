@@ -1,4 +1,4 @@
-import {useRef, useEffect} from "react";
+import {useEffect} from "react";
 import useInput from "../hooks/useInput";
 import PopupWithForm from "./PopupWithForm";
 
@@ -13,12 +13,15 @@ function EditAvatarPopup({
 }) {
   const link = useInput("", {isEmpty: true, minLength: 2, isLink: true});
 
+  useEffect(() => {
+    link.setValue("");
+  }, [isOpen]);
+
   function handleSubmit(e) {
     e.preventDefault();
     onUpdateAvatar({
       avatar: link.value,
     });
-    link.setValue("");
   }
 
   return (

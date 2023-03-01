@@ -12,7 +12,6 @@ function ConfirmPopup({
   function handleSubmit(e) {
     e.preventDefault();
     onCardRemove(card);
-    onClose();
   }
 
   return (

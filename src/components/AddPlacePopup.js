@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect} from "react";
 import useInput from "../hooks/useInput";
 import PopupWithForm from "./PopupWithForm";
 
@@ -14,14 +14,17 @@ function AddPlacePopup({
   const name = useInput("", {isEmpty: true, minLength: 2, maxLength: 40});
   const link = useInput("", {isEmpty: true, minLength: 2, isLink: true});
 
+  useEffect(() => {
+    name.setValue("");
+    link.setValue("");
+  }, [isOpen]);
+
   function handleSubmit(e) {
     e.preventDefault();
     onUpdatePlace({
       name: name.value,
       src: link.value,
     });
-    name.setValue("собака");
-    link.setValue("сутулая");
   }
 
   return (
