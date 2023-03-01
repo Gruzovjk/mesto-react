@@ -6,13 +6,10 @@ function ConfirmPopup({
   isLoading,
   onCardRemove,
   card,
-  buttonText,
-  buttonLoadingText,
 }) {
   function handleSubmit(e) {
     e.preventDefault();
     onCardRemove(card);
-    onClose();
   }
 
   return (
@@ -23,11 +20,11 @@ function ConfirmPopup({
       onClose={onClose}
       onSubmit={handleSubmit}
       onCloseByEscEndOverlay={onCloseByEscEndOverlay}
-    >
-      <button type="submit" className="popup__save-button">
-        {isLoading ? buttonLoadingText : buttonText}
-      </button>
-    </PopupWithForm>
+      isValid={true}
+      isLoading={isLoading}
+      buttonText="Да"
+      buttonLoadingText="Удаляем место..."
+    ></PopupWithForm>
   );
 }
 
