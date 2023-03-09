@@ -16,7 +16,7 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
-  const [ConfirmPopupOpen, setConfirmPopupOpen] = useState(null);
+  const [сonfirmPopupOpen, setConfirmPopupOpen] = useState(null);
 
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
@@ -196,7 +196,7 @@ function App() {
       />
 
       <ConfirmPopup
-        card={ConfirmPopupOpen}
+        card={сonfirmPopupOpen}
         onCloseByEscEndOverlay={closePopupByEscEndOverlay}
         onClose={closeAllPopups}
         onCardRemove={handleCardRemove}
