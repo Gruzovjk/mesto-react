@@ -47,6 +47,7 @@ function AddPlacePopup({
           required
           value={values.name || ""}
           onChange={handleChange}
+          style={{borderColor: errors.name && "red"}}
         />
         <span className="popup__input-error">{!isValid && errors.name}</span>
       </div>
@@ -55,12 +56,13 @@ function AddPlacePopup({
           type="url"
           className="popup__input popup__card-link"
           name="src"
-          placeholder="Ссылка на фото (формата .jpg, .gif или .png)"
+          placeholder="Ссылка на фото (формата .jpg или .png)"
           pattern="(https?:\/\/.*\.(?:png|jpe?g|tiff?|png|webp|bmp))"
           required
           minLength="2"
           value={values.src || ""}
           onChange={handleChange}
+          style={{borderColor: errors.src && "red"}}
         />
         <span className="popup__input-error">{!isValid && errors.src}</span>
       </div>

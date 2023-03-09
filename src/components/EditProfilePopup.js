@@ -54,6 +54,7 @@ function EditProfilePopup({
           placeholder="Ваше имя"
           value={values.name || ""}
           onChange={handleChange}
+          style={{borderColor: errors.name && "red"}}
         />
         <span className="popup__input-error">{!isValid && errors.name}</span>
       </div>
@@ -67,6 +68,7 @@ function EditProfilePopup({
           placeholder="Расскажите о себе"
           value={values.about || ""}
           onChange={handleChange}
+          style={{borderColor: errors.about && "red"}}
         />
         <span className="popup__input-error">{!isValid && errors.about}</span>
       </div>

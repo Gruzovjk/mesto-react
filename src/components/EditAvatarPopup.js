@@ -45,8 +45,9 @@ function EditAvatarPopup({
           onChange={handleChange}
           minLength={2}
           value={values.avatar || ""}
-          pattern="(https?:\/\/.*\.(?:png|jpe?g|tiff?|png|webp|bmp))"
+          pattern="(https?:\/\/.*\.(?:png|jpe?g|tiff?|png|webp|bmp|gif))"
           required
+          style={{borderColor: errors.avatar && "red"}}
         />
         <span className="popup__input-error">{!isValid && errors.avatar}</span>
       </div>
